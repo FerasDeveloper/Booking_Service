@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ResourceController;
 use Illuminate\Support\Facades\Route;
 
@@ -11,8 +12,8 @@ Route::middleware(['resolve.project', 'auth.user'])
     Route::get('/resources', [ResourceController::class, 'index']);
     Route::get('/resources/{resource}', [ResourceController::class, 'show']);
 
-    Route::post('/resources', [ResourceController::class, 'store'])
-      ->middleware('permission:resource.create');
+    Route::post('/resources', [ResourceController::class, 'store']);
+      // ->middleware('permission:resource.create');
 
     Route::patch('/resources/{resource}', [ResourceController::class, 'update'])
       ->middleware('permission:resource.update');
@@ -25,4 +26,9 @@ Route::middleware(['resolve.project', 'auth.user'])
 
     Route::post('/resources/{resource}/policy', [ResourceController::class, 'setPolicy'])
       ->middleware('permission:resource.update');
+
+    Route::post('/resources/{resourceId}/bookings', [BookingController::class, 'resourceBookings'])
+      ->middleware('permission:resource.viewBookings');
+
+    Route::post('/resources/{resourceId}/slots', [BookingController::class, 'slots']);
   });

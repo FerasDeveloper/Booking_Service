@@ -4,10 +4,16 @@ namespace App\Domains\Booking\Actions;
 
 use App\Domains\Booking\DTOs\CancellationPolicyDTO;
 use App\Domains\Booking\Repositories\Interface\ResourceRepositoryInterface;
+use App\Domains\Core\Actions\Action;
 use App\Models\Resource;
 
-class SetCancellationPolicyAction
+class SetCancellationPolicyAction extends Action
 {
+  protected function circuitServiceName(): string
+  {
+    return 'resource.setPolicy';
+  }
+  
   public function __construct(
     private readonly ResourceRepositoryInterface $repository,
   ) {}
@@ -19,6 +25,8 @@ class SetCancellationPolicyAction
       $policies
     );
 
-    $this->repository->setPolicies($resource, $dtos);
+    $this->run(function () use ($resource, $dtos) {
+      $this->repository->setPolicies($resource, $dtos);
+    });
   }
 }

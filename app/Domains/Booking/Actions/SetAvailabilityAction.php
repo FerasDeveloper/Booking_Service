@@ -4,10 +4,16 @@ namespace App\Domains\Booking\Actions;
 
 use App\Domains\Booking\DTOs\AvailabilityDTO;
 use App\Domains\Booking\Repositories\Interface\ResourceRepositoryInterface;
+use App\Domains\Core\Actions\Action;
 use App\Models\Resource;
 
-class SetAvailabilityAction
+class SetAvailabilityAction extends Action
 {
+  protected function circuitServiceName(): string
+  {
+    return 'resource.setAvailability';
+  }
+  
   public function __construct(
     private readonly ResourceRepositoryInterface $repository,
   ) {}
@@ -19,6 +25,8 @@ class SetAvailabilityAction
       $availabilities
     );
 
-    $this->repository->setAvailabilities($resource, $dtos);
+    $this->run(function () use ($resource, $dtos) {
+      $this->repository->setAvailabilities($resource, $dtos);
+    });
   }
 }
