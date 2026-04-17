@@ -13,7 +13,7 @@ Route::middleware(['resolve.project', 'auth.user'])
     Route::get('/resources/{resource}', [ResourceController::class, 'show']);
 
     Route::post('/resources', [ResourceController::class, 'store']);
-      // ->middleware('permission:resource.create');
+    // ->middleware('permission:resource.create');
 
     Route::patch('/resources/{resource}', [ResourceController::class, 'update'])
       ->middleware('permission:resource.update');
@@ -31,4 +31,11 @@ Route::middleware(['resolve.project', 'auth.user'])
       ->middleware('permission:resource.viewBookings');
 
     Route::post('/resources/{resourceId}/slots', [BookingController::class, 'slots']);
+
+
+    // client
+
+    Route::post('/create', [BookingController::class, 'store']);
+    Route::post('/cancel', [BookingController::class, 'cancel']);
+    Route::post('/reschedule', [BookingController::class, 'reschedule']);
   });

@@ -46,4 +46,47 @@ class CMSApiClient
 
     return $response->json();
   }
+
+  public function chargeBooking(array $data): array
+  {
+    // dd($data);
+    $response = Http::withHeaders(
+      $this->projectHeaders()
+    )->post("{$this->baseUrl}/api/payments/pay", [
+      'userId'      => $data['user_id'],
+      'userName' => $data['user_name'],
+      'projectId'   => $data['project_id'],
+      'amount'       => $data['amount'],
+      'currency'     => $data['currency'],
+      'gateway'      => $data['gateway'],
+      'paymentType' => 'full',
+      'token'        => $data['token'] ?? null,
+    ]);
+
+    if ($response->failed()) {
+      $error = $response->json('message')
+        ?? substr($response->body(), 0, 200);
+
+      throw new \Exception("Payment failed: " . $error);
+    }
+
+    return $response->json();
+  }
+
+  public function refundBooking(array $data): array
+  {
+    $response = Http::withHeaders(
+      $this->projectHeaders()
+    )->post("{$this->baseUrl}/api/payments/refund", [
+      'paymentId' => $data['payment_id'],
+      'amount'    => $data['amount'],
+    ]);
+
+    if ($response->failed()) {
+      dd($response);
+      throw new \Exception("Refund failed");
+    }
+
+    return $response->json();
+  }
 }
