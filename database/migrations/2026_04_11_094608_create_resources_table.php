@@ -20,6 +20,9 @@ return new class extends Migration
       $table->enum('status', ['active', 'inactive'])->default('active')->index();
       $table->json('settings')->nullable(); // إعدادات مرنة إضافية
 
+      $table->enum('payment_type', ['free', 'paid'])->default('free')->index();
+      $table->decimal('price', 12, 2)->nullable();
+
       $table->softDeletes();
       $table->timestamps();
 
