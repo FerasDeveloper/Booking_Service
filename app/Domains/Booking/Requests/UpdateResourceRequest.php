@@ -13,6 +13,8 @@ class UpdateResourceRequest extends FormRequest
       'type'          => ['sometimes', 'string', 'max:100'],
       'capacity'      => ['sometimes', 'integer', 'min:1'],
       'status'        => ['sometimes', 'string', 'in:active,inactive'],
+      'payment_type'  => ['sometimes', 'string', 'in:free,paid'],
+      'price'         => ['sometimes', 'nullable', 'numeric', 'min:0.01'],
       'settings'      => ['sometimes', 'array'],
     ];
   }

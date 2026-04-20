@@ -17,18 +17,26 @@ class Resource extends Model
     'type',
     'capacity',
     'status',
+    'payment_type',
+    'price',
     'settings',
   ];
 
   protected $casts = [
-    'capacity' => 'integer',
-    'settings' => 'array',
+    'capacity'    => 'integer',
+    'price'       => 'float',
+    'settings'    => 'array',
   ];
 
   // ─── Statuses ─────────────────────────────────────────────────────────────
 
   const STATUS_ACTIVE   = 'active';
   const STATUS_INACTIVE = 'inactive';
+
+  // ─── Payment Types ────────────────────────────────────────────────────────
+
+  const PAYMENT_FREE = 'free';
+  const PAYMENT_PAID = 'paid';
 
   // ─── Relationships ────────────────────────────────────────────────────────
 
@@ -46,7 +54,7 @@ class Resource extends Model
   public function cancellationPolicies(): HasMany
   {
     return $this->hasMany(BookingCancellationPolicy::class)
-      ->orderByDesc('hours_before'); // ترتيب تنازلي للمطابقة الصحيحة
+      ->orderByDesc('hours_before');
   }
 
   public function bookings(): HasMany
@@ -59,6 +67,21 @@ class Resource extends Model
   public function isActive(): bool
   {
     return $this->status === self::STATUS_ACTIVE;
+  }
+
+  public function isBookable(): bool
+  {
+    return $this->isActive();
+  }
+
+  public function isFree(): bool
+  {
+    return $this->payment_type === self::PAYMENT_FREE;
+  }
+
+  public function isPaid(): bool
+  {
+    return $this->payment_type === self::PAYMENT_PAID;
   }
 
   public function availabilityForDay(int $dayOfWeek): ?ResourceAvailability

@@ -15,6 +15,7 @@ Route::middleware(['resolve.project', 'auth.user'])
     Route::post('/resources', [ResourceController::class, 'store']);
     // ->middleware('permission:resource.create');
 
+
     Route::patch('/resources/{resource}', [ResourceController::class, 'update'])
       ->middleware('permission:resource.update');
 
