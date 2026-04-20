@@ -80,8 +80,22 @@ class BookingService
   {
     return DB::transaction(function () use ($dto) {
 
+      // $resource = $this->resourceRepository->findById($dto->resourceId);
       $resource = $this->resourceRepository->findById($dto->resourceId);
 
+      throw_if(! $resource, \Exception::class, 'Resource not found');
+      throw_if(! $resource->isActive(), \Exception::class, 'Resource inactive');
+
+      // 🔥 تحقق السعر
+      if ($resource->payment_type === 'paid') {
+        if ((float)$dto->amount !== (float)$resource->price) {
+          throw new \Exception('Invalid booking amount');
+        }
+      } else {
+        // 🔥 مجاني → اجبر السعر = 0
+        $dto->amount = 0;
+      }
+      
       throw_if(! $resource, \Exception::class, 'Resource not found');
       throw_if(! $resource->isActive(), \Exception::class, 'Resource inactive');
 
